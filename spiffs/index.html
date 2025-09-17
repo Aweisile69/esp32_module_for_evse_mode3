@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>便捷配置交流充电桩</title>
+    <!-- 引入Bootstrap简化样式（离线可用，也可替换为本地CSS） -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+</head>
+<body>
+    <div class="container mt-4 mb-5">
+        <!-- 顶部标题区 -->
+        <header class="text-center mb-5">
+            <h2 class="text-primary">TOSPO EVSE MODE3</h2>
+            <p class="text-muted">WIFI AP模式 · 本地WEB配置</p>
+            <!-- 连接状态提示 -->
+            <div id="connStatus" class="alert alert-warning d-inline-block px-3 py-1">
+                连接中...
+            </div>
+        </header>
+
+        <!-- 导航标签页 -->
+        <ul class="nav nav-tabs mb-4" id="mainTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="status-tab" data-bs-toggle="tab" data-bs-target="#status" type="button" role="tab">运行状态</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="config-tab" data-bs-toggle="tab" data-bs-target="#config" type="button" role="tab">参数配置</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="card-tab" data-bs-toggle="tab" data-bs-target="#card" type="button" role="tab">卡授权管理</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="alarm-tab" data-bs-toggle="tab" data-bs-target="#alarm" type="button" role="tab">告警记录</button>
+            </li>
+        </ul>
+
+        <!-- 标签页内容区 -->
+        <div class="tab-content" id="mainTabContent">
+            <!-- 1. 运行状态页 -->
+            <div class="tab-pane fade show active" id="status" role="tabpanel">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">实时运行参数</div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <!-- 基础参数 -->
+                            <div class="col-md-4">
+                                <div class="param-card">
+                                    <label class="param-label">供电电压</label>
+                                    <div id="voltage" class="param-value">-- V</div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="param-card">
+                                    <label class="param-label">充电电流</label>
+                                    <div id="current" class="param-value">-- A</div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="param-card">
+                                    <label class="param-label">CP信号幅值</label>
+                                    <div id="cpSignal" class="param-value">-- V</div>
+                                </div>
+                            </div>
+                            <!-- 安全状态 -->
+                            <div class="col-md-4">
+                                <div class="param-card">
+                                    <label class="param-label">漏电保护状态</label>
+                                    <div id="leakageStatus" class="param-value text-warning">未检测</div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="param-card">
+                                    <label class="param-label">面盖状态</label>
+                                    <div id="coverStatus" class="param-value text-success">关闭</div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="param-card">
+                                    <label class="param-label">WIFI连接状态</label>
+                                    <div id="wifiStatus" class="param-value text-success">已连接（AP模式）</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. 参数配置页 -->
+            <div class="tab-pane fade" id="config" role="tabpanel">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">设备参数配置</div>
+                    <div class="card-body">
+                        <form id="configForm">
+                            <div class="row g-3">
+                                <!-- 供电参数 -->
+                                <div class="col-md-6">
+                                    <label for="voltageDeviation" class="form-label">供电电压偏差</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="voltageDeviation" value="5" min="1" max="10">
+                                        <span class="input-group-text">%</span>
+                                    </div>
+                                    <div class="form-text">默认：±5%（AC220V）</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="maxCurrent" class="form-label">最大充电电流</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="maxCurrent" value="32" min="10" max="32">
+                                        <span class="input-group-text">A</span>
+                                    </div>
+                                    <div class="form-text">默认：≤32A</div>
+                                </div>
+                                <!-- CP信号参数 -->
+                                <div class="col-md-6">
+                                    <label for="cpDeviation" class="form-label">CP信号幅值偏差</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="cpDeviation" value="10" min="5" max="15">
+                                        <span class="input-group-text">%</span>
+                                    </div>
+                                    <div class="form-text">默认：±10%（12V）</div>
+                                </div>
+                                <!-- 漏电保护参数 -->
+                                <div class="col-md-6">
+                                    <label for="leakageAC" class="form-label">AC漏电保护阈值</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="leakageAC" value="30" min="10" max="50">
+                                        <span class="input-group-text">mA</span>
+                                    </div>
+                                    <div class="form-text">默认：&lt;30mA</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="leakageDC" class="form-label">DC漏电保护阈值</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="leakageDC" value="6" min="3" max="10">
+                                        <span class="input-group-text">mA</span>
+                                    </div>
+                                    <div class="form-text">默认：&lt;6mA</div>
+                                </div>
+                                <!-- 提交按钮 -->
+                                <div class="col-12">
+                                    <button type="submit" class="btn btn-primary" id="saveConfigBtn">保存配置</button>
+                                    <button type="button" class="btn btn-secondary ms-2" id="resetConfigBtn">恢复默认</button>
+                                    <div id="configMsg" class="mt-2 text-success d-none">配置保存成功！</div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. 卡授权管理页 -->
+            <div class="tab-pane fade" id="card" role="tabpanel">
+                <div class="card mb-3">
+                    <div class="card-header bg-primary text-white">添加授权卡</div>
+                    <div class="card-body">
+                        <form id="cardAddForm">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="cardId" class="form-label">卡号（8位数字）</label>
+                                    <input type="text" class="form-control" id="cardId" placeholder="例如：12345678" maxlength="8" pattern="\d{8}">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="cardExpire" class="form-label">有效期</label>
+                                    <input type="date" class="form-control" id="cardExpire">
+                                </div>
+                                <div class="col-md-2 align-self-end">
+                                    <button type="submit" class="btn btn-primary w-100">添加</button>
+                                </div>
+                            </div>
+                            <div id="cardAddMsg" class="mt-2 d-none"></div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header bg-primary text-white">已授权卡列表</div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>序号</th>
+                                        <th>卡号</th>
+                                        <th>有效期</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="cardList">
+                                    <!-- 动态加载授权卡列表 -->
+                                    <tr>
+                                        <td colspan="4" class="text-center text-muted">暂无授权卡数据</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. 告警记录页 -->
+            <div class="tab-pane fade" id="alarm" role="tabpanel">
+                <div class="card">
+                    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                        <span>开盖告警记录</span>
+                        <button type="button" class="btn btn-sm btn-light" id="clearAlarmBtn">清空记录</button>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>序号</th>
+                                        <th>告警时间</th>
+                                        <th>面盖状态</th>
+                                        <th>处理状态</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="alarmList">
+                                    <!-- 动态加载告警记录 -->
+                                    <tr>
+                                        <td colspan="4" class="text-center text-muted">暂无告警记录</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部信息 -->
+    <footer class="text-center text-muted py-3">
+        <p>设备型号：便捷配置交流充电桩 | 开发团队：朱春强项目组</p>
+    </footer>
+
+    <!-- 引入JS依赖 -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/script.js"></script>
+</body>
+</html>

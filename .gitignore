@@ -1,0 +1,25 @@
+# 1. PIO 核心冗余文件（必须忽略，自动生成且无需版本控制）
+.pio/               # PIO 编译缓存、固件镜像（.bin/.elf）、库依赖等
+.pioenvs/           # 旧版 PIO 环境目录（部分版本可能残留）
+.piolibdeps/        # PIO 库依赖缓存（会自动重新下载）
+
+# 2. VSCode 中 PIO 自动生成的冗余文件
+.vscode/.browse.c_cpp.db*  # C/C++ 代码浏览数据库（自动生成，占用空间大）
+.vscode/ipch/              # 智能感知预编译头文件目录（自动生成）
+.vscode/c_cpp_properties.json  # PIO 自动生成的 C/C++ 配置（切换环境会自动更新，无需提交）
+
+# 3. 通用临时文件与系统文件
+*.log               # 日志文件（如编译日志、串口日志）
+*.swp               # Vim 临时文件
+.DS_Store           # macOS 系统文件
+Thumbs.db           # Windows 系统文件
+
+# 4. ESP-IDF 相关冗余
+sdkconfig.old       # sdkconfig 配置备份文件（只保留 sdkconfig 即可）
+build/              # ESP-IDF 原生编译目录（PIO 项目一般不生成，防止残留）
+
+# 5. 保留 VSCode 关键配置（可选，方便团队协作）
+# 若团队统一开发环境，可保留以下文件；单人开发可全部忽略
+# !.vscode/launch.json      # 调试配置（如 ESP32 串口调试、JTAG 调试）
+# !.vscode/settings.json    # 项目特定设置（如代码缩进、格式化规则）
+# !.vscode/extensions.json  # 推荐插件列表（如 PIO 插件、C/C++ 插件）
