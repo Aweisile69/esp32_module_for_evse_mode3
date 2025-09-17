@@ -7,7 +7,6 @@
 idf_component_register(SRCS "main.c"
                             "../user_lib/spiffs_api/api_spiffs.c"
                        INCLUDE_DIRS "../user_lib/spiffs_api/")
-
 # 在构建系统中添加命令创建分区镜像
 # storage           -分区名
 # ../spiffs_image   -分区镜像文件路径
