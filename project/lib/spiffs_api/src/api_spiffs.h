@@ -1,6 +1,8 @@
 #ifndef __API_SPIFFS_H__
 #define __API_SPIFFS_H__
 
+#include <stdbool.h>
+
 /* public function protypes ------------------------------------------------- */
 void api_spiffs_init(void);
 bool spiffs_readfile(const char *path, uint16_t size, char *buffer);
