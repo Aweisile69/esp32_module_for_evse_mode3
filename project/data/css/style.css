@@ -1,62 +1,262 @@
-/* 基础样式优化 */
-body {
-    background-color: #f8f9fa;
+/* 基础样式 - 精简核心样式 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
     font-family: "Microsoft YaHei", sans-serif;
 }
-
-/* 参数卡片样式 */
-.param-card {
-    background-color: #fff;
-    border-radius: 8px;
+body {
+    background-color: #f5f7fa;
+    color: #333;
     padding: 15px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    text-align: center;
+    line-height: 1.6;
+}
+.container {
+    max-width: 800px;
+    margin: 0 auto;
 }
 
-.param-label {
-    display: block;
-    color: #6c757d;
-    font-size: 0.9rem;
+/* 标题样式 */
+header {
+    text-align: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #e0e0e0;
+}
+h1 {
+    font-size: 1.8rem;
+    color: #1a73e8;
     margin-bottom: 8px;
 }
+.status-indicator {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    margin-top: 5px;
+}
+.status-connected {
+    background-color: #e6f4ea;
+    color: #137333;
+}
+.status-connecting {
+    background-color: #fff8e6;
+    color: #e6a700;
+}
+.status-error {
+    background-color: #fce8e6;
+    color: #d93025;
+}
 
-.param-value {
-    font-size: 1.2rem;
+/* 标签页样式 */
+.tabs {
+    display: flex;
+    overflow-x: auto;
+    border-bottom: 1px solid #e0e0e0;
+    margin-bottom: 15px;
+}
+.tab-btn {
+    padding: 10px 15px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 1rem;
+    color: #5f6368;
+    white-space: nowrap;
+    position: relative;
+}
+.tab-btn.active {
+    color: #1a73e8;
+}
+.tab-btn.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-color: #1a73e8;
+}
+.tab-content {
+    display: none;
+}
+.tab-content.active {
+    display: block;
+}
+
+/* 卡片样式 */
+.card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    margin-bottom: 15px;
+    overflow: hidden;
+}
+.card-header {
+    background-color: #1a73e8;
+    color: white;
+    padding: 12px 15px;
     font-weight: bold;
-    color: #212529;
+    font-size: 1.1rem;
+}
+.card-body {
+    padding: 15px;
 }
 
-/* 表单按钮样式优化 */
-#saveConfigBtn, #resetConfigBtn {
-    transition: all 0.3s ease;
+/* 参数卡片网格 */
+.param-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 15px;
+    margin-bottom: 15px;
+}
+.param-card {
+    background: #f8fafc;
+    padding: 12px;
+    border-radius: 6px;
+    text-align: center;
+}
+.param-label {
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+}
+.param-value {
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+.text-success { color: #137333; }
+.text-warning { color: #e6a700; }
+.text-danger { color: #d93025; }
+
+/* 表单样式 */
+.form-group {
+    margin-bottom: 15px;
+}
+label {
+    display: block;
+    margin-bottom: 5px;
+    color: #5f6368;
+    font-size: 0.95rem;
+}
+input[type="number"],
+input[type="text"],
+input[type="date"] {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+.input-group {
+    display: flex;
+}
+.input-group input {
+    flex: 1;
+    border-right: none;
+    border-radius: 4px 0 0 4px;
+}
+.input-group span {
+    background: #f1f3f4;
+    border: 1px solid #ddd;
+    padding: 0 10px;
+    display: flex;
+    align-items: center;
+    border-radius: 0 4px 4px 0;
+}
+.form-text {
+    font-size: 0.85rem;
+    color: #666;
+    margin-top: 3px;
 }
 
-#saveConfigBtn:hover {
-    background-color: #0d6efd;
-    border-color: #0d6efd;
+/* 按钮样式 */
+.btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: background 0.2s;
+}
+.btn-primary {
+    background-color: #1a73e8;
+    color: white;
+}
+.btn-primary:hover {
+    background-color: #1557b0;
+}
+.btn-secondary {
+    background-color: #f1f3f4;
+    color: #333;
+}
+.btn-secondary:hover {
+    background-color: #e8eaed;
+}
+.btn-danger {
+    background-color: #d93025;
+    color: white;
+    padding: 4px 8px;
+    font-size: 0.85rem;
+}
+.btn-danger:hover {
+    background-color: #b71c1c;
 }
 
-#resetConfigBtn:hover {
-    background-color: #6c757d;
-    border-color: #6c757d;
+/* 表格样式 */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+th, td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+th {
+    color: #5f6368;
+    font-weight: 600;
+}
+.table-responsive {
+    overflow-x: auto;
 }
 
-/* 告警记录表格样式 */
-#alarmList .text-warning {
-    color: #ffc107 !important;
+/* 辅助样式 */
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+.col {
+    flex: 1;
+    min-width: 200px;
+}
+.text-center {
+    text-align: center;
+}
+.mb-2 {
+    margin-bottom: 8px;
+}
+.mt-2 {
+    margin-top: 8px;
+}
+.d-none {
+    display: none;
+}
+.card-header-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-#alarmList .text-success {
-    color: #198754 !important;
-}
-
-/* 响应式优化（小屏幕） */
-@media (max-width: 768px) {
-    .param-card {
-        margin-bottom: 15px;
-    }
-
-    #cardAddForm .col-md-6, #cardAddForm .col-md-4 {
-        margin-bottom: 15px;
-    }
+/* 底部样式 */
+footer {
+    text-align: center;
+    color: #666;
+    font-size: 0.85rem;
+    padding: 15px 0;
+    margin-top: 20px;
+    border-top: 1px solid #e0e0e0;
 }
