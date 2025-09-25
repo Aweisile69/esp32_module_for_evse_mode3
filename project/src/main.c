@@ -14,6 +14,7 @@
 
 #include "lwip/err.h"
 #include "lwip/sys.h"
+#include "cJSON.h"
 
 #include "api_spiffs.h"
 #include "system.h"
@@ -23,14 +24,14 @@
 static const char *TAG = "main";
 static char http_req_handler_buf[20480];
 
+static esp_err_t handler_ping(httpd_req_t *r);
 static esp_err_t handler_get_index_page(httpd_req_t *r);
 static esp_err_t handler_get_favicon(httpd_req_t *r);
 static esp_err_t handler_get_css(httpd_req_t *r);
 static esp_err_t handler_get_js(httpd_req_t *r);
-static esp_err_t handler_ping(httpd_req_t *r);
-static esp_err_t handler_api_status(httpd_req_t *r);
-static esp_err_t handler_api_config_get(httpd_req_t *r);
-static esp_err_t handler_api_config_post(httpd_req_t *r);
+static esp_err_t handler_get_api_status(httpd_req_t *r);
+static esp_err_t handler_get_api_config(httpd_req_t *r);
+static esp_err_t handler_post_api_config(httpd_req_t *r);
 static esp_err_t handler_api_cards_get(httpd_req_t *r);
 static esp_err_t handler_api_cards_post(httpd_req_t *r);
 static esp_err_t handler_api_cards_delete(httpd_req_t *r);
@@ -89,21 +90,21 @@ static const httpd_uri_t get_api_ping = {
 static const httpd_uri_t get_api_status = {
     .uri        = "/api/status",
     .method     = HTTP_GET,
-    .handler    = handler_api_status,
+    .handler    = handler_get_api_status,
     .user_ctx   = NULL,
 };
 
 static const httpd_uri_t get_api_config_get = {
     .uri        = "/api/config",
     .method     = HTTP_GET,
-    .handler    = handler_api_config_get,
+    .handler    = handler_get_api_config,
     .user_ctx   = NULL,
 };
 
 static const httpd_uri_t post_api_config_post = {
     .uri        = "/api/config",
     .method     = HTTP_POST,
-    .handler    = handler_api_config_post,
+    .handler    = handler_post_api_config,
     .user_ctx   = NULL,
 };
 
@@ -317,9 +318,9 @@ static esp_err_t handler_ping(httpd_req_t *r) {
     return ESP_OK;
 }
 
-#include "cJSON.h"  // 引入cJSON库（ESP-IDF已内置，需在组件中启用）
 
-static esp_err_t handler_api_status(httpd_req_t *r) {
+
+static esp_err_t handler_get_api_status(httpd_req_t *r) {
     // 1. 创建根JSON对象
     cJSON *root = cJSON_CreateObject();
     if (root == NULL) {
@@ -356,7 +357,7 @@ static esp_err_t handler_api_status(httpd_req_t *r) {
 }
 
 
-static esp_err_t handler_api_config_get(httpd_req_t *r) {
+static esp_err_t handler_get_api_config(httpd_req_t *r) {
     // 示例：配置数据（实际应从存储中读取）
     char json_buf[256];
     snprintf(json_buf, sizeof(json_buf), 
@@ -375,7 +376,7 @@ static esp_err_t handler_api_config_get(httpd_req_t *r) {
     return ESP_OK;
 }
 
-static esp_err_t handler_api_config_post(httpd_req_t *r) {
+static esp_err_t handler_post_api_config(httpd_req_t *r) {
     // 1. 读取前端发送的 JSON 数据
     char buf[1024];
     ssize_t len = httpd_req_recv(r, buf, sizeof(buf)-1);

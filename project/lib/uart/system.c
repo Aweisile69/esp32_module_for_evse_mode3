@@ -15,6 +15,14 @@
     .net_status     = NET_STAT_DISCONNECTED,        \
 }
 
+#define DEFAULT_VALUE_PARAM_CONFIG()    {           \        
+    .ov_threshold   = 286.0f,                       \
+    .uv_threshold   = 154.0f,                       \
+    .leakagedc      = 30,                           \
+    .leakageac      = 30,                           \
+    .maxcc          = 32,                           \
+}
+
 /* 串口数据处理缓冲区 */
 volatile uint8_t uart_data_process_buf[PROTOCOL_HEAD+UART_PROCESS_BUFF_LEN];
 /* 串口接收数据缓冲区 */
@@ -26,6 +34,7 @@ volatile uint8_t *rx_buf_in;
 volatile uint8_t *rx_buf_out;
 
 volatile running_info_t g_running_info = DEFAULT_VALUE_RUNNING_INFO();
+volatile param_config_t g_param_config = DEFAULT_VALUE_PARAM_CONFIG();
 
 /* private function protypes -------------------------------------------------*/
 static void _uart_write_data(uint8_t *in, unsigned short len);

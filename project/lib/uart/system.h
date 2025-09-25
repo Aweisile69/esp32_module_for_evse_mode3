@@ -58,6 +58,14 @@ typedef struct running_info{
     uint8_t net_status;             // 网络状态
 }running_info_t;
 
+typedef struct param_config{
+    float ov_threshold;             // 过压阈值
+    float uv_threshold;             // 欠压阈值
+    uint8_t leakagedc;              // dc漏电流阈值
+    uint8_t leakageac;              // ac漏电流阈值
+    uint8_t maxcc;                  // 最大充电电流
+}param_config_t;
+
 /* 串口数据缓冲区大小设置，如果RAM不够，可按需修改大小 */
 #define UART_PROCESS_BUFF_LEN           32
 #define UART_RX_BUFF_LEN                32
@@ -74,6 +82,7 @@ extern volatile uint8_t *rx_buf_in;
 extern volatile uint8_t *rx_buf_out;
 
 extern volatile running_info_t g_running_info;
+extern volatile param_config_t g_param_config;
 
 /* public function protypes ------------------------------------------------- */
 

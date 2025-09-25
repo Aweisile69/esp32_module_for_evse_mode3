@@ -169,22 +169,16 @@ function updateDeviceStatus() {
         });
 }
 
-// 初始化时立即更新一次状态
-updateDeviceStatus();
-// 每5秒自动刷新一次状态
-setInterval(updateDeviceStatus, 5000);
-
-
 // 加载配置
 function loadConfig() {
     fetch(`${SERVER_URL}/api/config`)
         .then(response => response.json())
         .then(config => {
-            document.getElementById('voltageDeviation').value = config.voltageDeviation || 5;
-            document.getElementById('maxCurrent').value = config.maxCurrent || 32;
-            document.getElementById('cpDeviation').value = config.cpDeviation || 10;
-            document.getElementById('leakageAC').value = config.leakageAC || 30;
-            document.getElementById('leakageDC').value = config.leakageDC || 6;
+            document.getElementById('OV_threshold').value = config.ov_threshold || 286.0;
+            document.getElementById('UV_threshold').value = config.uv_threshold || 154.0;
+            document.getElementById('leakageDC').value = config.leakagedc || 30;
+            document.getElementById('leakageAC').value = config.leakageac || 30;
+            document.getElementById('maxChargeCurrent').value = config.maxcc || 32;
         })
         .catch(err => console.error("加载配置失败：", err));
 }
