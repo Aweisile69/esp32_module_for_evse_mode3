@@ -358,21 +358,38 @@ static esp_err_t handler_get_api_status(httpd_req_t *r) {
 
 
 static esp_err_t handler_get_api_config(httpd_req_t *r) {
-    // 示例：配置数据（实际应从存储中读取）
-    char json_buf[256];
-    snprintf(json_buf, sizeof(json_buf), 
-        "{"
-        "\"voltageDeviation\": 5,"
-        "\"maxCurrent\": 32,"
-        "\"cpDeviation\": 10,"
-        "\"leakageAC\": 30,"
-        "\"leakageDC\": 6"
-        "}"
-    );
+    // 1. 创建根JSON对象
+    cJSON *root = cJSON_CreateObject();
+    if (root == NULL) {
+        httpd_resp_send_500(r);  // 内存分配失败时返回500错误
+        return ESP_FAIL;
+    }
 
+    // 2. 从全局变量读取数据并添加到JSON对象
+    // 注意：volatile变量访问需确保线程安全（必要时加锁）
+    cJSON_AddNumberToObject(root, "ov_threshold", g_param_config.ov_threshold);
+    cJSON_AddNumberToObject(root, "uv_threshold", g_param_config.uv_threshold);
+    cJSON_AddNumberToObject(root, "leakagedc", g_param_config.leakagedc);
+    cJSON_AddNumberToObject(root, "leakageac", g_param_config.leakageac);
+    cJSON_AddNumberToObject(root, "maxcc", g_param_config.maxcc);
+
+    // 3. 将JSON对象转换为字符串
+    char *json_str = cJSON_PrintUnformatted(root);  // 无格式（紧凑）输出
+    if (json_str == NULL) {
+        cJSON_Delete(root);
+        httpd_resp_send_500(r);
+        return ESP_FAIL;
+    }
+
+    // 4. 发送HTTP响应
     httpd_resp_set_status(r, "200 OK");
     httpd_resp_set_type(r, "application/json");
-    httpd_resp_send(r, json_buf, HTTPD_RESP_USE_STRLEN);
+    httpd_resp_send(r, json_str, HTTPD_RESP_USE_STRLEN);
+
+    // 5. 释放cJSON分配的内存（避免内存泄漏）
+    cJSON_Delete(root);
+    free(json_str);  // cJSON_Print系列函数返回的字符串需手动释放
+
     return ESP_OK;
 }
 
@@ -680,7 +697,7 @@ httpd_handle_t http_start_server(const httpd_uri_t *http_events_array[])
 void app_main(void) 
 {
     /* init spiffs */
-    api_spiffs_init();
+    api_spiffs_init();  
 
     //Initialize NVS
     esp_err_t ret = nvs_flash_init();

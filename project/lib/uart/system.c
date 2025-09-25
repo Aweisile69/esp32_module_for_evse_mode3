@@ -7,7 +7,8 @@
 #include "system.h"
 #include "panel_uart_api.h"
 
-#define DEFAULT_VALUE_RUNNING_INFO()    {           \        
+#define DEFAULT_VALUE_RUNNING_INFO()                \
+{                                                   \
     .charge_status  = EVSE_IDLE,                    \
     .power          = 3500.0f,                      \
     .voltage        = 220.0f,                       \
@@ -15,7 +16,8 @@
     .net_status     = NET_STAT_DISCONNECTED,        \
 }
 
-#define DEFAULT_VALUE_PARAM_CONFIG()    {           \        
+#define DEFAULT_VALUE_PARAM_CONFIG()                \
+{                                                   \
     .ov_threshold   = 286.0f,                       \
     .uv_threshold   = 154.0f,                       \
     .leakagedc      = 30,                           \
